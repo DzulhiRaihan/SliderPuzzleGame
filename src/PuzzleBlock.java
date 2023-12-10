@@ -1,14 +1,12 @@
 import javax.swing.*;
 
 public class PuzzleBlock {
-    JFrame jframe;
+    static JFrame jframe = new JFrame();
     static JPanel mainPanel;
     static MainPanelGame mainPanelGame;
-
     JButton shuffleBtn;
     
-    public PuzzleBlock(){
-        jframe = new JFrame();
+    public PuzzleBlock(int size, int dim, int mar){
         mainPanel = new JPanel();
 
         jframe.setSize(880, 590);
@@ -18,7 +16,7 @@ public class PuzzleBlock {
         jframe.setVisible(true);
         jframe.setLocationRelativeTo(null);
 
-        mainPanelGame = new MainPanelGame(2, 550, 30);
+        mainPanelGame = new MainPanelGame(size, dim, mar);
         mainPanelGame.setBounds(0, 0, 550, 590);
         mainPanel.add(mainPanelGame);
 
@@ -49,24 +47,28 @@ public class PuzzleBlock {
         playAgainButton.setBounds(30, 45, 100, 20);
         panel.add(playAgainButton);
 
-        JButton NextLevelButton = new JButton("Next Level");
-        NextLevelButton.setBounds(155, 45, 100, 20);
-        panel.add(NextLevelButton);
+        JButton exitButton = new JButton("Exit");
+        exitButton.setBounds(155, 45, 100, 20);
+        panel.add(exitButton);
         frame.setVisible(true);
 
         playAgainButton.addActionListener(e -> {
             mainPanelGame.addMouseListener(mainPanelGame.myMouseListener);
+            mainPanelGame.gameOver = false;
             mainPanelGame.newGame();
             frame.dispose();
         });
 
-        NextLevelButton.addActionListener(e -> {
+        exitButton.addActionListener(e -> {
+            new Level();
+            jframe.dispose();
+            frame.dispose();
         });
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new PuzzleBlock();
+            new PuzzleBlock(2, 550, 30);
         });
     }
 
