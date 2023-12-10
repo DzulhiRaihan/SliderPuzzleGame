@@ -134,6 +134,42 @@ public class MainPanelGame extends JPanel {
         repaint();
     }
 
+    public void popUp(){
+        JFrame frame = new JFrame();
+        frame.setTitle("Slide Puzzle");
+        frame.setSize(300,150);
+        frame.setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel();
+        frame.add(panel, "Center");
+        panel.setLayout(null);
+
+        JLabel label = new JLabel("You Win!");
+        label.setBounds(115, 20, 100, 10);
+        panel.add(label);
+
+        JButton playAgainButton = new JButton("Play Again");
+        playAgainButton.setBounds(30, 45, 100, 20);
+        panel.add(playAgainButton);
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.setBounds(155, 45, 100, 20);
+        panel.add(exitButton);
+        frame.setVisible(true);
+
+        playAgainButton.addActionListener(e -> {
+            addMouseListener(myMouseListener);
+//            gameOver = false;
+            newGame();
+            frame.dispose();
+        });
+
+        exitButton.addActionListener(e -> {
+            new Level();
+            frame.dispose();
+        });
+    }
+
     private boolean isSolvable(){
         int countInversions = 0;
 
@@ -169,6 +205,7 @@ public class MainPanelGame extends JPanel {
 
             if(tiles[i] == 0){
                 if(gameOver){
+                    gameOver = false;
                     removeMouseListener(getMouseListeners()[0]);
                     PuzzleBlock.popUp();
                 }
@@ -202,7 +239,7 @@ public class MainPanelGame extends JPanel {
     }
 
     public static void main(String[] args) {
-        MainPanelGame mainPanelGame = new MainPanelGame(10, 550, 30);
+        MainPanelGame mainPanelGame = new MainPanelGame(2, 550, 30);
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

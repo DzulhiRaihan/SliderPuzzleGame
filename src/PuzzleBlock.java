@@ -30,6 +30,7 @@ public class PuzzleBlock {
     }
 
     static void popUp(){
+        mainPanelGame.removeMouseListener(mainPanelGame.myMouseListener);
         JFrame frame = new JFrame();
         frame.setTitle("Slide Puzzle");
         frame.setSize(300,150);
