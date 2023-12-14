@@ -1,3 +1,6 @@
+package controll;
+import view.PuzzleBlock;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -16,11 +19,10 @@ public class MainPanelGame extends JPanel {
     private int blankPos;
     public int margin;
     private int gridSize;
-    boolean gameOver;
-
+    public boolean gameOver;
     public MouseAdapter myMouseListener;
-    private static final JButton exitButton = new JButton("Exit");
-    private boolean isNextLevelButtonPressed = false;
+    public boolean isTimerRun = false;
+    public static Timer timer = new Timer();
 
 
     public MainPanelGame(int size, int dim, int mar){
@@ -45,6 +47,11 @@ public class MainPanelGame extends JPanel {
         myMouseListener = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                if (isTimerRun == false) {
+                    timer.start();
+                    isTimerRun = true;
+                }
+
                 if(gameOver){
                     newGame();
                 }else{
@@ -88,6 +95,7 @@ public class MainPanelGame extends JPanel {
                     }
 
                     gameOver = isSolved();
+
                 }
                 repaint();
             }
@@ -105,8 +113,6 @@ public class MainPanelGame extends JPanel {
            reset();
            shuffle();
             System.out.println(Arrays.toString(tiles) + " " + isSolvable());
-            System.out.println();
-            System.out.println(getTileSize());
         }while(!isSolvable());
         gameOver = false;
     }
@@ -132,42 +138,6 @@ public class MainPanelGame extends JPanel {
         }
         System.out.println(Arrays.toString(tiles) + " " + isSolvable());
         repaint();
-    }
-
-    public void popUp(){
-        JFrame frame = new JFrame();
-        frame.setTitle("Slide Puzzle");
-        frame.setSize(300,150);
-        frame.setLocationRelativeTo(null);
-
-        JPanel panel = new JPanel();
-        frame.add(panel, "Center");
-        panel.setLayout(null);
-
-        JLabel label = new JLabel("You Win!");
-        label.setBounds(115, 20, 100, 10);
-        panel.add(label);
-
-        JButton playAgainButton = new JButton("Play Again");
-        playAgainButton.setBounds(30, 45, 100, 20);
-        panel.add(playAgainButton);
-
-        JButton exitButton = new JButton("Exit");
-        exitButton.setBounds(155, 45, 100, 20);
-        panel.add(exitButton);
-        frame.setVisible(true);
-
-        playAgainButton.addActionListener(e -> {
-            addMouseListener(myMouseListener);
-//            gameOver = false;
-            newGame();
-            frame.dispose();
-        });
-
-        exitButton.addActionListener(e -> {
-            new Level();
-            frame.dispose();
-        });
     }
 
     private boolean isSolvable(){
@@ -206,7 +176,9 @@ public class MainPanelGame extends JPanel {
             if(tiles[i] == 0){
                 if(gameOver){
                     gameOver = false;
+                    isTimerRun = false;
                     removeMouseListener(getMouseListeners()[0]);
+                    timer.stop();
                     PuzzleBlock.popUp();
                 }
                 continue;
