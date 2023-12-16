@@ -1,12 +1,11 @@
 package view;
 
 import javax.swing.*;
+
+import API.JDBC;
+import API.Login;
+
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Objects;
 
 public class LoginApp {
     JTextField userName;
@@ -14,6 +13,7 @@ public class LoginApp {
     JFrame frame = new JFrame();
 
     public LoginApp() {
+        new JDBC();
         JPanel panel = new JPanel();
         // JFrame frame = new JFrame();
         frame.setSize(360, 350);
@@ -68,12 +68,21 @@ public class LoginApp {
 
         frame.setVisible(true);
 
-        loginBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LoginBtnActionPerformed(evt);
-                cleanForm();
+        loginBtn.addActionListener(e -> {
+            String user = userName.getText();
+            String pass = String.valueOf(password.getPassword());
+            try{
+                Login.login(user, pass);
+                if (Login.isLogin){
+                    new Menu();
+                    frame.dispose();
+                }
+            } catch (Exception ex){
+                ex.printStackTrace();
             }
+            cleanForm();
         });
+
 
         password.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -88,73 +97,17 @@ public class LoginApp {
         });
     }
 
-    private void LoginBtnActionPerformed(java.awt.event.ActionEvent evt) {
-        String username, passwordDB, query, passDB = null;
-        String SUrl, SUsername, SPassword;
-
-        SUrl = "jdbc:postgresql://db.guyatknjmkqoagpnwepe.supabase.co:5432/postgres?user=postgres&password=DzulhiRaihan02";
-        SUsername = "postgres";
-        SPassword = "DzulhiRaihan02";
-        int notFound = 0;
-
-        try {
-            Class.forName("org.postgresql.Driver");
-            Connection con = DriverManager.getConnection(SUrl, SUsername, SPassword);
-            Statement st = con.createStatement();
-            if ("".equals(userName.getText())) {
-                JOptionPane.showMessageDialog(new JFrame(), "Username tidak boleh kosong", "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            } else if ("".equals(password.getText())) {
-                JOptionPane.showMessageDialog(new JFrame(), "Password tidak boleh kosong", "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            } else {
-                username = userName.getText();
-                passwordDB = password.getText();
-
-                query = "SELECT * FROM \"user\" WHERE username = '" + username + "' AND password = '" + passwordDB
-                        + "'";
-
-                // String query2 = "SELECT \"score\".score " +
-                // "FROM \"score\" " +
-                // "INNER JOIN \"user\" ON \"score\".id_user = \"user\".id_user " +
-                // "WHERE username = '" + username + "' AND password = '" + passwordDB + "'";
-                ResultSet rs = st.executeQuery(query);
-                while (rs.next()) {
-                    passDB = rs.getString("password");
-                    notFound = 1;
-                }
-                if (notFound == 1 && Objects.equals(passwordDB, passDB)) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Login Berhasil", "Success",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    // ResultSet rs2 = st.executeQuery(query2);
-                    // while (rs2.next()){
-                    // int score = rs2.getInt("score");
-                    // }
-                    frame.dispose();
-                    Menu mainContent = new Menu();
-                } else {
-                    JOptionPane.showMessageDialog(new JFrame(), "Username atau Password salah", "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-            }
-
-        } catch (Exception e) {
-            System.out.println("Error" + e.getMessage());
-        }
-    }
-
     private void cleanForm() {
         userName.setText("");
         password.setText("");
     }
 
     private void SignUpBtnActionPerformed(java.awt.event.ActionEvent evt) {
-        RegisterApp registerForm = new RegisterApp();
+        new RegisterApp();
         frame.dispose();
     }
 
-    public static void main(String[] args) {
-        LoginApp loginForm = new LoginApp();
-
+    public static void main(String[] args) {   
+        new LoginApp();
     }
 }

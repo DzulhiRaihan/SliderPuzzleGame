@@ -1,7 +1,6 @@
 package view;
 
 import java.awt.Color;
-import java.awt.Font;
 import component.MyButton;
 
 import javax.swing.*;
@@ -20,21 +19,20 @@ public class Menu {
     JLabel background = new JLabel(new ImageIcon("src/assets/Mainmenu.jpg"), JLabel.CENTER);
 
     JPanel layer = new JPanel();
-    MyButton myButton = new MyButton("Exit");
-
 
     public Menu(){
-        jframe.setSize(300, 300);
+        jframe.setSize(300, 338);
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setLayout(null);
         jframe.setLocationRelativeTo(null);
+        jframe.setVisible(true);
+        background.setBounds(0, 0, 300, 300);
+        jframe.add(background);
 
         layer.setBackground(new Color(0,0,0,80));
         layer.setBounds(0, 0, 300, 300);
         jframe.add(layer);
-
-        background.setBounds(0, 0, 300, 300);
-        jframe.add(background);
+        
         
         playBtn.setBounds(75, 70, 150, 30);
         background.add(playBtn);
@@ -59,8 +57,7 @@ public class Menu {
         optionLabel.setBounds(62, 35, 190, 30);
         optionLabel.setFont(PixelFont.getFont(1,15));
         background.add(optionLabel);
-        
-        jframe.setVisible(true);
+    
         
         playBtn.addActionListener(e -> {
             new Level();
@@ -68,12 +65,20 @@ public class Menu {
         });
 
         profileBtn.addActionListener(e -> {
-//              new Profile();
+            try {
+                new profilePage();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
             jframe.dispose();
         });
 
         LeaderboardBtn.addActionListener(e -> {
-//            new Leaderboard();
+            try {
+                new leaderboardPage();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
             jframe.dispose();
         });
     }

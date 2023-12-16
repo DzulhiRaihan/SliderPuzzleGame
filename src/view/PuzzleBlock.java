@@ -1,7 +1,10 @@
 package view;
 
+import java.sql.SQLException;
+
 import javax.swing.*;
 
+import API.Profile;
 import controll.MainPanelGame;
 import controll.Timer;
 
@@ -11,7 +14,11 @@ public class PuzzleBlock {
     static MainPanelGame mainPanelGame;
     JButton shuffleBtn = new JButton("Shuffle");
     JButton pauseButton = new JButton("Pause");
+    JButton solveButton = new JButton("Solve");
+
     JLabel timeLabel = new JLabel("Time: ");
+    JLabel moveLabel = new JLabel("Move: ");
+
 
     public PuzzleBlock(int size, int dim, int mar) {
         mainPanel = new JPanel();
@@ -35,9 +42,11 @@ public class PuzzleBlock {
 
         timeLabel.setBounds(570, 100, 100, 50);
         mainPanel.add(timeLabel);
-
-        MainPanelGame.timer.setBounds(570, 150, 100, 50);
+        MainPanelGame.timer.setBounds(610, 100, 100, 50);
         mainPanel.add(MainPanelGame.timer);
+        
+        mainPanelGame.moveLabel.setBounds(570, 150, 100, 50);
+        mainPanel.add(mainPanelGame.moveLabel);
 
         shuffleBtn.addActionListener(e -> {
             mainPanelGame.newGame();
@@ -57,10 +66,13 @@ public class PuzzleBlock {
             }
         });
 
+
     }
 
-    public static void popUp() {
+    public static void popUp() throws SQLException {
         mainPanelGame.removeMouseListener(mainPanelGame.myMouseListener);
+
+        Profile.updateTotalMove(mainPanelGame.getMoveCount());
         JFrame frame = new JFrame();
         frame.setTitle("Slide Puzzle");
         frame.setSize(300, 150);
@@ -70,16 +82,20 @@ public class PuzzleBlock {
         frame.add(panel, "Center");
         panel.setLayout(null);
 
-        JLabel label = new JLabel("You Win!");
+        JLabel label = new JLabel("You Win!!!");
         label.setBounds(115, 20, 100, 10);
         panel.add(label);
 
+        JLabel totalCountLabel = new JLabel("Total Move: " + mainPanelGame.getMoveCount());
+        totalCountLabel.setBounds(100, 35, 100, 10);
+        panel.add(totalCountLabel);
+
         JButton playAgainButton = new JButton("Play Again");
-        playAgainButton.setBounds(30, 45, 100, 20);
+        playAgainButton.setBounds(30, 55, 100, 20);
         panel.add(playAgainButton);
 
         JButton exitButton = new JButton("Exit");
-        exitButton.setBounds(155, 45, 100, 20);
+        exitButton.setBounds(155, 55, 100, 20);
         panel.add(exitButton);
         frame.setVisible(true);
 
@@ -87,13 +103,15 @@ public class PuzzleBlock {
             mainPanelGame.addMouseListener(mainPanelGame.myMouseListener);
             mainPanelGame.gameOver = false;
             mainPanelGame.isTimerRun = false;
-            MainPanelGame.timer.reset();
             mainPanelGame.newGame();
+            MainPanelGame.timer.reset();
+            mainPanelGame.resetMoveCount();
             frame.dispose();
         });
 
         exitButton.addActionListener(e -> {
             MainPanelGame.timer.reset();
+            mainPanelGame.resetMoveCount();
             new Level();
             jframe.dispose();
             frame.dispose();
@@ -106,7 +124,7 @@ public class PuzzleBlock {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new PuzzleBlock(2, 550, 30);
+            new PuzzleBlock(3, 550, 30);
         });
     }
 

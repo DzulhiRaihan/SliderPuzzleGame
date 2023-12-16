@@ -1,31 +1,23 @@
 package controll;
+
 import view.PuzzleBlock;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import component.PixelFont;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Random;
 
 public class MainPanelGame extends JPanel {
-    private int size;
-    private static int nbTiles;
-    public int dimension;
-    private static final Color FOREGROUND_COLOR = new Color(239, 83, 80); // For tiles
-    private static final Random RANDOM = new Random();
-    private static int[] tiles;
-    private int tileSize;
-    private int blankPos;
-    public int margin;
-    private int gridSize;
-    public boolean gameOver;
-    public MouseAdapter myMouseListener;
-    public boolean isTimerRun = false;
-    public static Timer timer = new Timer();
 
+    public MainPanelGame(int size, int dim, int mar) {
 
-    public MainPanelGame(int size, int dim, int mar){
         this.size = size;
         dimension = dim;
         margin = mar;
@@ -38,12 +30,10 @@ public class MainPanelGame extends JPanel {
         tileSize = gridSize / size;
 
         setPreferredSize(new Dimension(dimension, dimension + margin));
-        setBackground(Color.WHITE);
-        setForeground(FOREGROUND_COLOR);
-        setFont(new Font("SansSerif", Font.BOLD, 60));
+        setForeground(new Color(248, 239, 186));
+        setFont(PixelFont.getFont(60));
 
         gameOver = true;
-
         myMouseListener = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -52,14 +42,14 @@ public class MainPanelGame extends JPanel {
                     isTimerRun = true;
                 }
 
-                if(gameOver){
+                if (gameOver) {
                     newGame();
-                }else{
+                } else {
                     int ex = e.getX() - margin;
                     int ey = e.getY() - margin;
 
                     // click in the grid
-                    if(ex < 0 || ex > gridSize || ey < 0 || ey > gridSize){
+                    if (ex < 0 || ex > gridSize || ey < 0 || ey > gridSize) {
                         return;
                     }
 
@@ -77,21 +67,23 @@ public class MainPanelGame extends JPanel {
                     int dir = 0;
 
                     // we search direction for multiple tile moves
-                    if(c1 == c2 && Math.abs(r1 - r2) > 0){
+                    if (c1 == c2 && Math.abs(r1 - r2) > 0) {
                         dir = (r1 - r2) > 0 ? size : -size;
-                    }else if(r1 == r2 && Math.abs(c1 - c2) > 0){
+                    } else if (r1 == r2 && Math.abs(c1 - c2) > 0) {
                         dir = (c1 - c2) > 0 ? 1 : -1;
                     }
 
-                    if(dir != 0){
+                    if (dir != 0) {
                         // we move tiles in the direction
-                        do{
+                        do {
                             int newBlankPos = blankPos + dir;
                             tiles[blankPos] = tiles[newBlankPos];
                             blankPos = newBlankPos;
-                        }while(blankPos != clickPos);
+                        } while (blankPos != clickPos);
 
                         tiles[blankPos] = 0;
+                        moveCount++;
+                        setMoveLabel();
                     }
 
                     gameOver = isSolved();
@@ -102,18 +94,37 @@ public class MainPanelGame extends JPanel {
         };
         addMouseListener(myMouseListener);
         newGame();
+
+        try {
+            backgroundImage = ImageIO.read(new File("src/assets/playingGame.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public int getTileSize(){
+    public void setMoveLabel() {
+        moveLabel.setText("Move: " + moveCount);
+    }
+
+    public int getMoveCount() {
+        return moveCount;
+    }
+
+    public void resetMoveCount() {
+        moveCount = 0;
+        moveLabel.setText("Move: " + moveCount);
+    }
+
+    public int getTileSize() {
         return size;
     }
 
-    public void newGame(){
-        do{
-           reset();
-           shuffle();
+    public void newGame() {
+        do {
+            reset();
+            shuffle();
             System.out.println(Arrays.toString(tiles) + " " + isSolvable());
-        }while(!isSolvable());
+        } while (!isSolvable());
         gameOver = false;
     }
 
@@ -121,8 +132,8 @@ public class MainPanelGame extends JPanel {
         this.size = newSize;
     }
 
-    private void reset(){
-        for(int i = 0; i < tiles.length; i++){
+    private void reset() {
+        for (int i = 0; i < tiles.length; i++) {
             tiles[i] = (i + 1) % tiles.length;
         }
         blankPos = tiles.length - 1;
@@ -140,12 +151,12 @@ public class MainPanelGame extends JPanel {
         repaint();
     }
 
-    private boolean isSolvable(){
+    private boolean isSolvable() {
         int countInversions = 0;
 
-        for(int i = 0; i < nbTiles; i++){
-            for(int j = 0; j < i; j++){
-                if(tiles[j] > tiles[i]){
+        for (int i = 0; i < nbTiles; i++) {
+            for (int j = 0; j < i; j++) {
+                if (tiles[j] > tiles[i]) {
                     countInversions++;
                 }
             }
@@ -154,27 +165,27 @@ public class MainPanelGame extends JPanel {
         return countInversions % 2 == 0;
     }
 
-    boolean isSolved(){
-        if(tiles[tiles.length - 1] != 0){
+    boolean isSolved() {
+        if (tiles[tiles.length - 1] != 0) {
             return false;
         }
-        for(int i = nbTiles - 1; i >= 0; i--){
-            if(tiles[i] != i + 1){
+        for (int i = nbTiles - 1; i >= 0; i--) {
+            if (tiles[i] != i + 1) {
                 return false;
             }
         }
         return true;
     }
 
-    private void drawGrid(Graphics2D g){
-        for(int i = 0; i < tiles.length; i++){
+    private void drawGrid(Graphics2D g) throws SQLException {
+        for (int i = 0; i < tiles.length; i++) {
             int r = i / size;
             int c = i % size;
             int x = margin + c * tileSize;
             int y = margin + r * tileSize;
 
-            if(tiles[i] == 0){
-                if(gameOver){
+            if (tiles[i] == 0) {
+                if (gameOver) {
                     gameOver = false;
                     isTimerRun = false;
                     removeMouseListener(getMouseListeners()[0]);
@@ -188,13 +199,13 @@ public class MainPanelGame extends JPanel {
             g.fillRoundRect(x, y, tileSize, tileSize, 25, 25);
             g.setColor(Color.BLACK);
             g.drawRoundRect(x, y, tileSize, tileSize, 25, 25);
-            g.setColor(Color.WHITE);
+            g.setColor(Color.GRAY);
 
             drawCenteredString(g, String.valueOf(tiles[i]), x, y);
         }
     }
 
-    private void drawCenteredString(Graphics2D g, String s, int x, int y){
+    private void drawCenteredString(Graphics2D g, String s, int x, int y) {
         FontMetrics fm = g.getFontMetrics();
         int asc = fm.getAscent();
         int desc = fm.getDescent();
@@ -202,16 +213,25 @@ public class MainPanelGame extends JPanel {
                 y + (asc + (tileSize - (asc + desc)) / 2));
     }
 
-    protected void paintComponent(Graphics g){
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2D = (Graphics2D) g;
         g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        drawGrid(g2D);
+
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, this);
+        }
+        try {
+            drawGrid(g2D);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
-        MainPanelGame mainPanelGame = new MainPanelGame(2, 550, 30);
+        MainPanelGame mainPanelGame = new MainPanelGame(3, 550, 30);
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -225,6 +245,21 @@ public class MainPanelGame extends JPanel {
         });
     }
 
-
+    private int size;
+    private static int nbTiles;
+    public int dimension;
+    private static final Random RANDOM = new Random();
+    private static int[] tiles;
+    private int tileSize;
+    private int blankPos;
+    public int margin;
+    private int gridSize;
+    public boolean gameOver;
+    public MouseAdapter myMouseListener;
+    public boolean isTimerRun = false;
+    public static Timer timer = new Timer();
+    private static int moveCount = 0;
+    public JLabel moveLabel = new JLabel("Move: " + moveCount);
+    private Image backgroundImage;
 
 }

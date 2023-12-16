@@ -1,9 +1,9 @@
 package view;
 import javax.swing.*;
+
+import API.JDBC;
+
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
 
 public class RegisterApp {
     JTextField userName;
@@ -11,7 +11,7 @@ public class RegisterApp {
     JPasswordField confirmPassword;
     JFrame frame = new JFrame();
     public RegisterApp(){
-//        JFrame frame = new JFrame();
+        new JDBC();
         JPanel panel = new JPanel();
         frame.setSize(400, 370);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -72,9 +72,16 @@ public class RegisterApp {
 
         frame.setVisible(true);
 
-        registerBtn.addActionListener(new java.awt.event.ActionListener() {
+        registerBtn.addActionListener(e -> {
+            String username = userName.getText();
+            String password = String.valueOf(passwordText.getPassword());
+            String confirmPass = String.valueOf(confirmPassword.getPassword());
+            registerAction(username, password, confirmPass);
+        });
+
+        confirmPassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RegisterBtnActionPerformed(evt);
+                registerBtn.doClick();
             }
         });
 
@@ -83,50 +90,29 @@ public class RegisterApp {
                 LoginBtnActionPerformed(evt);
             }
         });
+        
     }
 
     private void LoginBtnActionPerformed(java.awt.event.ActionEvent evt) {
         frame.dispose();
-        LoginApp loginForm = new LoginApp();
+        new LoginApp();
     }
-    private void RegisterBtnActionPerformed(java.awt.event.ActionEvent evt) {
-        String username, password;
-        String SUrl, SUsername, SPassword;
-
-        SUrl = "jdbc:postgresql://db.ingwwupmzptwgnsqxhjg.supabase.co:5432/postgres?user=postgres&password=Kelompok10_";
-        SUsername = "postgres";
-        SPassword = "Kelompok10_";
-
+    
+    private void registerAction (String username, String password, String confirmPassword){
         try {
-            Class.forName("org.postgresql.Driver");
-            Connection con = DriverManager.getConnection(SUrl, SUsername, SPassword);
-            Statement st = con.createStatement();
-            if ("".equals(userName.getText())){
-                JOptionPane.showMessageDialog(new JFrame(), "Username tidak boleh kosong", "Error", JOptionPane.ERROR_MESSAGE);
-            } else if ("".equals(passwordText.getText())){
-                JOptionPane.showMessageDialog(new JFrame(), "Password tidak boleh kosong", "Error", JOptionPane.ERROR_MESSAGE);
-            } else if ("".equals(confirmPassword.getText())){
-                JOptionPane.showMessageDialog(new JFrame(), "Confirm Password tidak boleh kosong", "Error", JOptionPane.ERROR_MESSAGE);
-            } else if (!passwordText.getText().equals(confirmPassword.getText())){
-                JOptionPane.showMessageDialog(new JFrame(), "Password tidak sama", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                username = userName.getText();
-                password = passwordText.getText();
-
-                String query = "INSERT INTO \"user\" (username,password) VALUES ('" + username + "', '" + password +"')";
-                st.executeUpdate(query);
-                JOptionPane.showMessageDialog(new JFrame(), "Register Berhasil", "Success", JOptionPane.INFORMATION_MESSAGE);
-                frame.dispose();
+            if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()){
+                JOptionPane.showMessageDialog(null, "Please fill all the field");
+            }else{
+                API.Register.register(username, password);
                 new LoginApp();
+                frame.dispose();
             }
-            con.close();
-
         }catch (Exception e){
-            System.out.println("Error" + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        RegisterApp regis = new RegisterApp();
+        new RegisterApp();
     }
 }
