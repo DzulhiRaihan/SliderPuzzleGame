@@ -79,7 +79,7 @@ public class Level {
         });
 
         backToMenu.addActionListener(e -> {
-            new Menu();
+            new MenuPage();
             jframe.dispose();
         });
     }

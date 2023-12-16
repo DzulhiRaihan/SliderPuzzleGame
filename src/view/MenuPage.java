@@ -6,7 +6,7 @@ import component.MyButton;
 import javax.swing.*;
 import component.PixelFont;
 
-public class Menu {
+public class MenuPage {
     JFrame jframe = new JFrame();   
 
     MyButton playBtn = new MyButton("Play");
@@ -20,7 +20,7 @@ public class Menu {
 
     JPanel layer = new JPanel();
 
-    public Menu(){
+    public MenuPage(){
         jframe.setSize(300, 338);
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setLayout(null);
@@ -85,7 +85,7 @@ public class Menu {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new Menu();
+            new MenuPage();
         });
     }
 }

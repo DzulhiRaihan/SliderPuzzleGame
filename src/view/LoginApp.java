@@ -74,7 +74,7 @@ public class LoginApp {
             try{
                 Login.login(user, pass);
                 if (Login.isLogin){
-                    new Menu();
+                    new MenuPage();
                     frame.dispose();
                 }
             } catch (Exception ex){

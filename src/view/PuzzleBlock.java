@@ -5,10 +5,11 @@ import java.sql.SQLException;
 import javax.swing.*;
 
 import API.Profile;
+import component.Game;
 import controll.MainPanelGame;
 import controll.Timer;
 
-public class PuzzleBlock {
+public class PuzzleBlock implements Game {
     static JFrame jframe = new JFrame();
     static JPanel mainPanel;
     static MainPanelGame mainPanelGame;
@@ -18,7 +19,6 @@ public class PuzzleBlock {
 
     JLabel timeLabel = new JLabel("Time: ");
     JLabel moveLabel = new JLabel("Move: ");
-
 
     public PuzzleBlock(int size, int dim, int mar) {
         mainPanel = new JPanel();
@@ -44,7 +44,7 @@ public class PuzzleBlock {
         mainPanel.add(timeLabel);
         MainPanelGame.timer.setBounds(610, 100, 100, 50);
         mainPanel.add(MainPanelGame.timer);
-        
+
         mainPanelGame.moveLabel.setBounds(570, 150, 100, 50);
         mainPanel.add(mainPanelGame.moveLabel);
 
@@ -53,26 +53,30 @@ public class PuzzleBlock {
         });
 
         pauseButton.addActionListener(e -> {
-            if (Timer.isRunning) {
-                MainPanelGame.timer.stop();
-                pauseButton.setText("Resume");
-                mainPanelGame.removeMouseListener(mainPanelGame.myMouseListener);
-            } else {
-                if (mainPanelGame.isTimerRun == true) {
-                    MainPanelGame.timer.resume();
-                    pauseButton.setText("Pause");
-                    mainPanelGame.addMouseListener(mainPanelGame.myMouseListener);
-                }
-            }
+            pauseGame();
         });
 
+    }
 
+    public void pauseGame() {
+        if (Timer.isRunning) {
+            MainPanelGame.timer.stop();
+            pauseButton.setText("Resume");
+            mainPanelGame.removeMouseListener(mainPanelGame.myMouseListener);
+        } else {
+            if (mainPanelGame.isTimerRun == true) {
+                MainPanelGame.timer.resume();
+                pauseButton.setText("Pause");
+                mainPanelGame.addMouseListener(mainPanelGame.myMouseListener);
+            }
+        }
     }
 
     public static void popUp() throws SQLException {
         mainPanelGame.removeMouseListener(mainPanelGame.myMouseListener);
 
         Profile.updateTotalMove(mainPanelGame.getMoveCount());
+        Profile.updateTotalTime(MainPanelGame.timer.getMinutes(), MainPanelGame.timer.getSeconds());
         JFrame frame = new JFrame();
         frame.setTitle("Slide Puzzle");
         frame.setSize(300, 150);

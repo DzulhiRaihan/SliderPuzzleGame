@@ -225,7 +225,6 @@ public class MainPanelGame extends JPanel {
         try {
             drawGrid(g2D);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

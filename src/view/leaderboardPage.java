@@ -25,6 +25,7 @@ public class leaderboardPage {
     JLabel rankLabel = new JLabel("RANK");
     JLabel usernameLabel = new JLabel("USERNAME");
     JLabel totalMoveLabel = new JLabel("TOTAL MOVE ");
+    JLabel timLabel = new JLabel("TIME");
 
     Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
 
@@ -45,21 +46,27 @@ public class leaderboardPage {
 
         rankLabel.setBounds(20, 48, 70, 20);
         backGround.add(rankLabel);
-        rankLabel.setFont(PixelFont.getFont(1, 15));
+        rankLabel.setFont(PixelFont.getFont(1, 12));
 
-        usernameLabel.setBounds(90, 48, 70, 20);
+        usernameLabel.setBounds(65, 48, 70, 20);
         backGround.add(usernameLabel);
-        usernameLabel.setFont(PixelFont.getFont(1, 15));
+        usernameLabel.setFont(PixelFont.getFont(1, 12));
 
-        totalMoveLabel.setBounds(180, 48, 95, 20);
+        totalMoveLabel.setBounds(140, 48, 95, 20);
         backGround.add(totalMoveLabel);
-        totalMoveLabel.setFont(PixelFont.getFont(1, 15));
+        totalMoveLabel.setFont(PixelFont.getFont(1, 12));
+
+        timLabel.setBounds(230, 48, 70, 20);
+        backGround.add(timLabel);
+        timLabel.setFont(PixelFont.getFont(1, 12));
 
         try {
             ResultSet result = Profile.getLeaderboard();
             while (result.next()) {
                 String username = result.getString("username");
                 int totalMove = result.getInt("total_move");
+                int minute = result.getInt("minute");
+                int second = result.getInt("second");
                 
                 JLabel rank = new JLabel();
                 rank.setText(String.valueOf(result.getRow()));
@@ -69,15 +76,22 @@ public class leaderboardPage {
 
                 JLabel usernameLabel = new JLabel();
                 usernameLabel.setText(username);
-                usernameLabel.setBounds(90, 50 + (result.getRow() * 25), 70, 20);
+                usernameLabel.setBounds(65, 50 + (result.getRow() * 25), 70, 20);
                 backGround.add(usernameLabel);
                 usernameLabel.setFont(PixelFont.getFont(1, 15));
                 
                 JLabel totalMoveLabel = new JLabel();
                 totalMoveLabel.setText(String.valueOf(totalMove));
-                totalMoveLabel.setBounds(180, 50 + (result.getRow() * 25), 95, 20);
+                totalMoveLabel.setBounds(140, 50 + (result.getRow() * 25), 95, 20);
                 backGround.add(totalMoveLabel);
                 totalMoveLabel.setFont(PixelFont.getFont(1, 15));
+
+                JLabel timeLabel = new JLabel();
+                timeLabel.setText(minute + ":" + second);
+                timeLabel.setBounds(230, 50 + (result.getRow() * 25), 70, 20);
+                backGround.add(timeLabel);
+                timeLabel.setFont(PixelFont.getFont(1, 15));
+                
             }
 
         } catch (Exception e) {

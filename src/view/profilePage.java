@@ -87,7 +87,7 @@ public class profilePage {
         backBtn.setFont(PixelFont.getFont(1, 12));
 
         backBtn.addActionListener(e -> {
-            new Menu();
+            new MenuPage();
             frame.dispose();
         });
         
