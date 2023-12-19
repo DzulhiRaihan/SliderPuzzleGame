@@ -18,14 +18,18 @@ public class profilePage {
 
     private String username;
     private int move;
+    private int scoreGame;
 
     JFrame frame = new JFrame();
     JLabel backGround = new JLabel(new ImageIcon("src/assets/Mainmenu.jpg"), JLabel.CENTER);
 
     JLabel yourProfile = new JLabel("YOUR PROFILE");
-    JLabel usernameLabel = new JLabel("USERNAME");
 
+    JLabel usernameLabel = new JLabel("USERNAME");
     JLabel userName = new JLabel();
+
+    JLabel scoreLabel = new JLabel("SCORE");
+    JLabel score = new JLabel();
     
     JLabel totalMoveLabel = new JLabel("TOTAL MOVE ");
     JLabel totalMove = new JLabel();
@@ -38,9 +42,11 @@ public class profilePage {
     int seconds = 0;
 
     JLabel timeLabel = new JLabel("TIME ");
+    
     public profilePage() throws SQLException {
         username = Profile.getUserName();
         move = Profile.getTotalMove();
+        scoreGame = Profile.getScore();
 
         frame.setSize(300, 338);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,11 +74,25 @@ public class profilePage {
         userName.setHorizontalAlignment(JLabel.CENTER);
         userName.setText(username);
 
-        totalMoveLabel.setBounds(105, 120, 160, 20);
+        scoreLabel.setBounds(120, 110, 160, 20);
+        backGround.add(scoreLabel);
+        scoreLabel.setFont(PixelFont.getFont(1, 15));
+
+        score.setBounds(60, 140, 170, 25);
+        backGround.add(score);
+        score.setFont(PixelFont.getFont(1, 15));
+        score.setBorder(border);    
+        score.setBackground(Color.WHITE);
+        score.setOpaque(true);  
+        score.setHorizontalAlignment(JLabel.CENTER);
+        score.setText(String.valueOf(scoreGame));
+
+
+        totalMoveLabel.setBounds(105, 180, 160, 20);
         backGround.add(totalMoveLabel);
         totalMoveLabel.setFont(PixelFont.getFont(1, 15));
 
-        totalMove.setBounds(60, 150, 170, 25);
+        totalMove.setBounds(60, 210, 170, 25);
         backGround.add(totalMove);
         totalMove.setFont(PixelFont.getFont(1, 15));
         totalMove.setBorder(border);
@@ -81,7 +101,7 @@ public class profilePage {
         totalMove.setText(String.valueOf(move));
         totalMove.setHorizontalAlignment(JLabel.CENTER);
 
-        backBtn.setBounds(70, 190, 150, 30);
+        backBtn.setBounds(70, 250, 150, 30);
         backGround.add(backBtn);
         backBtn.setRadius(10);
         backBtn.setFont(PixelFont.getFont(1, 12));
@@ -92,5 +112,4 @@ public class profilePage {
         });
         
     }
-    
 }

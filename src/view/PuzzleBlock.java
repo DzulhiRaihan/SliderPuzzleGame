@@ -1,5 +1,4 @@
 package view;
-
 import java.sql.SQLException;
 
 import javax.swing.*;
@@ -8,15 +7,16 @@ import API.Profile;
 import component.Game;
 import controll.MainPanelGame;
 import controll.Timer;
+import component.MyButton;
+import component.PixelFont;
 
 public class PuzzleBlock implements Game {
     static JFrame jframe = new JFrame();
     static JPanel mainPanel;
     static MainPanelGame mainPanelGame;
-    JButton shuffleBtn = new JButton("Shuffle");
-    JButton pauseButton = new JButton("Pause");
-    JButton solveButton = new JButton("Solve");
-
+    MyButton shuffleBtn = new MyButton("Shuffle");
+    MyButton pauseButton = new MyButton("Pause");
+    
     JLabel timeLabel = new JLabel("Time: ");
     JLabel moveLabel = new JLabel("Move: ");
 
@@ -34,18 +34,28 @@ public class PuzzleBlock implements Game {
         mainPanelGame.setBounds(0, 0, 550, 590);
         mainPanel.add(mainPanelGame);
 
-        shuffleBtn.setBounds(570, 20, 100, 50);
+        shuffleBtn.setBounds(570, 20, 120, 30);
         mainPanel.add(shuffleBtn);
+        shuffleBtn.setFont(PixelFont.getFont(15));
 
-        pauseButton.setBounds(690, 20, 100, 50);
+        pauseButton.setBounds(730, 20, 120, 30);
         mainPanel.add(pauseButton);
+        pauseButton.setFont(PixelFont.getFont(15));
 
-        timeLabel.setBounds(570, 100, 100, 50);
+        timeLabel.setBounds(570, 60, 100, 50);
+        timeLabel.setFont(PixelFont.getFont(15));
         mainPanel.add(timeLabel);
-        MainPanelGame.timer.setBounds(610, 100, 100, 50);
+        
+        MainPanelGame.timer.setBounds(615, 60, 100, 50);
+        MainPanelGame.timer.setFont(PixelFont.getFont(15));
         mainPanel.add(MainPanelGame.timer);
 
-        mainPanelGame.moveLabel.setBounds(570, 150, 100, 50);
+        MainPanelGame.scoreLabel.setBounds(570, 100, 300, 50);
+        MainPanelGame.scoreLabel.setFont(PixelFont.getFont(15));
+        mainPanel.add(MainPanelGame.scoreLabel);
+
+        mainPanelGame.moveLabel.setBounds(735, 60, 100, 50);
+        mainPanelGame.moveLabel.setFont(PixelFont.getFont(15));
         mainPanel.add(mainPanelGame.moveLabel);
 
         shuffleBtn.addActionListener(e -> {
@@ -61,11 +71,13 @@ public class PuzzleBlock implements Game {
     public void pauseGame() {
         if (Timer.isRunning) {
             MainPanelGame.timer.stop();
+            MainPanelGame.scoreLabel.stop();
             pauseButton.setText("Resume");
             mainPanelGame.removeMouseListener(mainPanelGame.myMouseListener);
         } else {
             if (mainPanelGame.isTimerRun == true) {
                 MainPanelGame.timer.resume();
+                MainPanelGame.scoreLabel.resume();
                 pauseButton.setText("Pause");
                 mainPanelGame.addMouseListener(mainPanelGame.myMouseListener);
             }
@@ -75,8 +87,8 @@ public class PuzzleBlock implements Game {
     public static void popUp() throws SQLException {
         mainPanelGame.removeMouseListener(mainPanelGame.myMouseListener);
 
-        Profile.updateTotalMove(mainPanelGame.getMoveCount());
-        Profile.updateTotalTime(MainPanelGame.timer.getMinutes(), MainPanelGame.timer.getSeconds());
+        Profile.updateTotalMoveAndScore(MainPanelGame.getMoveCount(),MainPanelGame.scoreLabel.getScore());
+        Profile.updateTotalTime(MainPanelGame.timer.getMinutes(), Timer.getSeconds());
         JFrame frame = new JFrame();
         frame.setTitle("Slide Puzzle");
         frame.setSize(300, 150);
@@ -90,7 +102,7 @@ public class PuzzleBlock implements Game {
         label.setBounds(115, 20, 100, 10);
         panel.add(label);
 
-        JLabel totalCountLabel = new JLabel("Total Move: " + mainPanelGame.getMoveCount());
+        JLabel totalCountLabel = new JLabel("Total Move: " + MainPanelGame.getMoveCount());
         totalCountLabel.setBounds(100, 35, 100, 10);
         panel.add(totalCountLabel);
 
@@ -109,6 +121,7 @@ public class PuzzleBlock implements Game {
             mainPanelGame.isTimerRun = false;
             mainPanelGame.newGame();
             MainPanelGame.timer.reset();
+            MainPanelGame.scoreLabel.reset();
             mainPanelGame.resetMoveCount();
             frame.dispose();
         });
@@ -120,10 +133,6 @@ public class PuzzleBlock implements Game {
             jframe.dispose();
             frame.dispose();
         });
-    }
-
-    public void start() {
-
     }
 
     public static void main(String[] args) {

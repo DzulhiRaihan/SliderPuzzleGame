@@ -7,16 +7,16 @@ import component.MyButton;
 import component.PixelFont;
 public class Level {
 
-    JFrame jframe = new JFrame();
-    MyButton level1Btn = new MyButton("2x2");
-    MyButton level2Btn = new MyButton("3x3");
-    MyButton level3Btn = new MyButton("4x4");
-    MyButton backToMenu = new MyButton("Back to Menu");
-    JLabel letsPlayLabel = new JLabel("LET'S PLAY!!!");
-    JLabel chooseLevelLabel = new JLabel("Choose Your Limits!");
+    private JFrame jframe = new JFrame();
+    private MyButton level1Btn = new MyButton("3x3");
+    private MyButton level2Btn = new MyButton("4x4");
+    private MyButton level3Btn = new MyButton("5x5");
+    private MyButton backToMenu = new MyButton("Back to Menu");
+    private JLabel letsPlayLabel = new JLabel("LET'S PLAY!!!");
+    private JLabel chooseLevelLabel = new JLabel("Choose Your Limits!");
 
-    JLabel background = new JLabel(new ImageIcon("src/assets/level.jpg"), JLabel.CENTER);
-    JPanel layer = new JPanel();
+    private JLabel background = new JLabel(new ImageIcon("src/assets/level.jpg"), JLabel.CENTER);
+    private JPanel layer = new JPanel();
 
 
     public Level(){
@@ -69,12 +69,12 @@ public class Level {
         });
 
         level2Btn.addActionListener(e -> {
-            new PuzzleBlock(3, 550, 20);
+            new PuzzleBlock(4, 550, 20);
             jframe.dispose();
         });
 
         level3Btn.addActionListener(e -> {
-            new PuzzleBlock(4, 550, 20);
+            new PuzzleBlock(5, 550, 20);
             jframe.dispose();
         });
 
@@ -84,9 +84,4 @@ public class Level {
         });
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new Level();
-        });
-    }
 }

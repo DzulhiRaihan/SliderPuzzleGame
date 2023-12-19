@@ -3,7 +3,7 @@ package controll;
 import javax.swing.*;
 
 public class Timer extends JLabel implements Runnable {
-    private int seconds;
+    private static int seconds;
     private int minutes;
 
     public static boolean isRunning = false;
@@ -56,7 +56,7 @@ public class Timer extends JLabel implements Runnable {
         setText("00:00");
     }
 
-    public int getSeconds() {
+    public static int getSeconds() {
         return seconds;
     }
 

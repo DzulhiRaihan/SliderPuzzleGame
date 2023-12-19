@@ -112,7 +112,4 @@ public class RegisterApp {
         }
     }
 
-    public static void main(String[] args) {
-        new RegisterApp();
-    }
 }

@@ -79,13 +79,7 @@ public class MenuPage {
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
-            jframe.dispose();
         });
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new MenuPage();
-        });
-    }
 }

@@ -40,6 +40,7 @@ public class MainPanelGame extends JPanel {
                 if (isTimerRun == false) {
                     timer.start();
                     isTimerRun = true;
+                    scoreLabel.start();
                 }
 
                 if (gameOver) {
@@ -106,7 +107,7 @@ public class MainPanelGame extends JPanel {
         moveLabel.setText("Move: " + moveCount);
     }
 
-    public int getMoveCount() {
+    public static int getMoveCount() {
         return moveCount;
     }
 
@@ -165,7 +166,7 @@ public class MainPanelGame extends JPanel {
         return countInversions % 2 == 0;
     }
 
-    boolean isSolved() {
+    private boolean isSolved() {
         if (tiles[tiles.length - 1] != 0) {
             return false;
         }
@@ -190,6 +191,7 @@ public class MainPanelGame extends JPanel {
                     isTimerRun = false;
                     removeMouseListener(getMouseListeners()[0]);
                     timer.stop();
+                    scoreLabel.stop();
                     PuzzleBlock.popUp();
                 }
                 continue;
@@ -257,6 +259,7 @@ public class MainPanelGame extends JPanel {
     public MouseAdapter myMouseListener;
     public boolean isTimerRun = false;
     public static Timer timer = new Timer();
+    public static ScoreLabel scoreLabel = new ScoreLabel();
     private static int moveCount = 0;
     public JLabel moveLabel = new JLabel("Move: " + moveCount);
     private Image backgroundImage;

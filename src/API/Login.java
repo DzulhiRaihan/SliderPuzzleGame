@@ -34,9 +34,4 @@ public class Login {
             System.out.println(e.getMessage());
         }
     }
-
-    public static void main(String[] args) throws SQLException {
-        // new JDBC();
-        login("raihan", "123");
-    }
 }

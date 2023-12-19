@@ -33,8 +33,4 @@ public class JDBC {
     public static String getUser_id() {
         return user_id;
     }
-
-    public static void main(String[] args) {
-        new JDBC();
-    }
 }

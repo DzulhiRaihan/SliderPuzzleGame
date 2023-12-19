@@ -8,9 +8,9 @@ import API.Login;
 import java.awt.*;
 
 public class LoginApp {
-    JTextField userName;
-    JPasswordField password;
-    JFrame frame = new JFrame();
+    private JTextField userName;
+    private JPasswordField password;
+    private JFrame frame = new JFrame();
 
     public LoginApp() {
         new JDBC();
@@ -19,7 +19,7 @@ public class LoginApp {
         frame.setSize(360, 350);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel);
-        panel.setLayout(null);
+        panel.setLayout(null);  
         frame.setLocationRelativeTo(null);
 
         JLabel loginLabel = new JLabel("Login");
@@ -106,8 +106,6 @@ public class LoginApp {
         new RegisterApp();
         frame.dispose();
     }
+    
 
-    public static void main(String[] args) {   
-        new LoginApp();
-    }
 }
